@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Prompt');
+
+* {
+    box-sizing: border-box;
+}
+
+html, body, #root {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;  
+    padding: 0;
+    background: rgb(17, 18, 20);
+    font-family: 'Prompt', sans-serif;
+    color: white;
+}
+
+body {
+    position: fixed;
+}
+
+.top {
+    background-color: black;
+    
+}
+
+.difficultyBar {
+    width: 100vw;
+    height: 4vh;
+    background-color: rgb(35, 37, 44);
+    display: flex;
+    justify-content: space;
+    padding-left: 30%;
+    padding-right: 30%;
+}
+
+.difficultyButton {
+    margin: auto;
+    border: none;
+    font-size: medium;
+    color: rgb(217, 217, 217);
+    background: none;
+    user-select: none;
+}
+
+.difficultyButton:hover {
+    text-decoration: underline;
+    color: white;
+}
+
+.gameBar {
+    width: 100vw;
+    height: 10vh;
+    background-color: rgb(22, 23, 29);
+    display: flex;
+    justify-content: space-between;
+}
+
+.gameBarComponent {
+    margin: auto;
+    background-color: rgb(35, 37, 44);
+    color: white;
+    width: 10%;
+    height: 70%;
+    user-select: none;
+}
+
+.resetButton {
+    background: rgb(35, 37, 44);
+    border-width: 8px;
+    width: 4vw;
+    height: 70%;
+}
+
+.resetButton:active {
+    transform: scale(0.9);
+    background: rgb(35, 37, 44);
+}
+
+.timer, .flagNumber{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size:xx-large;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.bottom {
+    display: flex;
+    justify-content: center;
+    background-color: rgb(22, 23, 29);
+}
+
+.appbox {
+    padding: 2;
+    width: 90vw;
+    height: 85vh;
+    background: rgb(35, 37, 44);
+    
+}
