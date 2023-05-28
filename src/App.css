@@ -28,13 +28,12 @@ body {
     height: 4vh;
     background-color: rgb(35, 37, 44);
     display: flex;
-    justify-content: space;
-    padding-left: 30%;
-    padding-right: 30%;
+    justify-content: center;
 }
 
 .difficultyButton {
-    margin: auto;
+    margin-left: 2rem;
+    margin-right: 2rem;
     border: none;
     font-size: medium;
     color: rgb(217, 217, 217);
@@ -59,7 +58,7 @@ body {
     margin: auto;
     background-color: rgb(35, 37, 44);
     color: white;
-    width: 10%;
+    width: 8rem;
     height: 70%;
     user-select: none;
 }
@@ -74,6 +73,10 @@ body {
 .resetButton:active {
     transform: scale(0.9);
     background: rgb(35, 37, 44);
+}
+
+.material-symbols-rounded {
+    transform: scale(1.5);
 }
 
 .timer, .flagNumber{

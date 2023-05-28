@@ -140,7 +140,7 @@ const generateChildId = (size) => {
 
 //-----------------------------------------------------------------------------------------------------------
 
-const Button = ({ position, newZPosition, fixedCord, pCord, dict, flipDirction, reveal, setReveal, gameState, setGameState, flagNum, setFlagNum }) => {
+const Button = ({ position, newZPosition, fixedCord, pCord, dict, flipDirction, reveal, setReveal, gameState, setGameState, flagNum, setFlagNum, setIconText }) => {
   const mesh = useRef(null)
 
   let cord = []
@@ -160,12 +160,27 @@ const Button = ({ position, newZPosition, fixedCord, pCord, dict, flipDirction, 
 
     if (isMined) {
       console.log("!!Boom")
+      setIconText('sentiment_very_dissatisfied')
       revealAllMines()
       setGameState(false)
       return
     }
 
     revealCells(cord)
+
+    if (isWinning()) {
+      console.log('winning')
+      setIconText('sentiment_very_satisfied')
+      setGameState(false)
+      }
+  }
+
+  const isWinning = () => {
+    let result = true
+    dict.forEach(i => {
+      if (!i.isMined && !i.isRevealed) result = false
+    })
+    return result
   }
 
   const revealCells = (cord) => {
@@ -208,16 +223,17 @@ const Button = ({ position, newZPosition, fixedCord, pCord, dict, flipDirction, 
   }
 
   const revealAllMines = () => {
-    dict.forEach( function(object, name) {
+    dict.forEach(function (object, name) {
       if (object.isMined) setReveal(name)
       dict.get(name).isRevealed = true
-
     })
   }
 
+
   const onContextFunc = () => {
+    if (!gameState) return
     if (dict.get(cellName).isRevealed) return
-    if (flagNum == 0 && flagged == false) return 
+    if (flagNum == 0 && flagged == false) return
     if (!flagged) setFlagNum(flagNum - 1)
     if (flagged) setFlagNum(flagNum + 1)
     dict.get(cellName).isFlagged = !flagged
@@ -251,10 +267,10 @@ const createButton = (num) => {
   return table
 }
 
-const Side = ({ position, rotation, size, fixedCord, pCord, tempDict, flipDirction, stage, setStage, gameState, setGameState, flagNum, setFlagNum }) => {
+const Side = ({ position, rotation, size, fixedCord, pCord, tempDict, flipDirction, stage, setStage, gameState, setGameState, flagNum, setFlagNum, setIconText }) => {
   let z = -0.03
   const buttons = createButton(size).map((cords, i) =>
-    (<Button key={i} position={cords} newZPosition={z} fixedCord={fixedCord} pCord={pCord} dict={tempDict} flipDirction={flipDirction} reveal={stage} setReveal={setStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} />)
+    (<Button key={i} position={cords} newZPosition={z} fixedCord={fixedCord} pCord={pCord} dict={tempDict} flipDirction={flipDirction} reveal={stage} setReveal={setStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} setIconText={setIconText} />)
   )
 
   return (
@@ -264,7 +280,7 @@ const Side = ({ position, rotation, size, fixedCord, pCord, tempDict, flipDircti
   )
 }
 
-const Box = ({ size, mineNum, tempDict, childIds, startTimer, stopTimer, setFlagText }) => {
+const Box = ({ size, mineNum, tempDict, childIds, startTimer, stopTimer, setFlagText, setIconText }) => {
   const mesh = useRef(null)
   let fixedCord = Math.floor(size / 2) + 1
 
@@ -305,24 +321,27 @@ const Box = ({ size, mineNum, tempDict, childIds, startTimer, stopTimer, setFlag
   }, [flagNum])
 
 
+
+
   return (
     <mesh ref={mesh} onClick={(e) => { e.stopPropagation() }} onContextMenu={(e) => { e.stopPropagation() }}>
       <boxBufferGeometry attach='geometry' args={[size, size, size]} />
       <meshStandardMaterial attach='material' color='gray' />
 
-      <Side position={[0, 0, size / 2]} size={size} fixedCord={[2, fixedCord]} pCord={[0, 1]} tempDict={tempDict} flipDirction={[1, 1, 1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} />
-      <Side position={[0, 0, -size / 2]} rotation={[0, 3.14, 0]} size={size} fixedCord={[2, -fixedCord]} pCord={[0, 1]} tempDict={tempDict} flipDirction={[-1, 1, 1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} />
-      <Side position={[size / 2, 0, 0]} rotation={[0, 1.57, 0]} size={size} fixedCord={[0, fixedCord]} pCord={[2, 1]} tempDict={tempDict} flipDirction={[1, 1, -1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} />
-      <Side position={[-size / 2, 0, 0]} rotation={[0, -1.57, 0]} size={size} fixedCord={[0, -fixedCord]} pCord={[2, 1]} tempDict={tempDict} flipDirction={[1, 1, 1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} />
-      <Side position={[0, size / 2, 0]} rotation={[-1.57, 0, 0]} size={size} fixedCord={[1, fixedCord]} pCord={[0, 2]} tempDict={tempDict} flipDirction={[1, 1, -1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} />
-      <Side position={[0, -size / 2, 0]} rotation={[1.57, 0, 0]} size={size} fixedCord={[1, -fixedCord]} pCord={[0, 2]} tempDict={tempDict} flipDirction={[1, 1, 1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} />
+      <Side position={[0, 0, size / 2]} size={size} fixedCord={[2, fixedCord]} pCord={[0, 1]} tempDict={tempDict} flipDirction={[1, 1, 1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} setIconText={setIconText} />
+      <Side position={[0, 0, -size / 2]} rotation={[0, 3.14, 0]} size={size} fixedCord={[2, -fixedCord]} pCord={[0, 1]} tempDict={tempDict} flipDirction={[-1, 1, 1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} setIconText={setIconText} />
+      <Side position={[size / 2, 0, 0]} rotation={[0, 1.57, 0]} size={size} fixedCord={[0, fixedCord]} pCord={[2, 1]} tempDict={tempDict} flipDirction={[1, 1, -1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} setIconText={setIconText} />
+      <Side position={[-size / 2, 0, 0]} rotation={[0, -1.57, 0]} size={size} fixedCord={[0, -fixedCord]} pCord={[2, 1]} tempDict={tempDict} flipDirction={[1, 1, 1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} setIconText={setIconText} />
+      <Side position={[0, size / 2, 0]} rotation={[-1.57, 0, 0]} size={size} fixedCord={[1, fixedCord]} pCord={[0, 2]} tempDict={tempDict} flipDirction={[1, 1, -1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} setIconText={setIconText} />
+      <Side position={[0, -size / 2, 0]} rotation={[1.57, 0, 0]} size={size} fixedCord={[1, -fixedCord]} pCord={[0, 2]} tempDict={tempDict} flipDirction={[1, 1, 1]} stage={stage} setStage={handleSetStage} gameState={gameState} setGameState={setGameState} flagNum={flagNum} setFlagNum={setFlagNum} setIconText={setIconText} />
     </mesh>
   )
 }
 
 const GameBoard = ({ size, mineNum }) => {
-  const time_elem = document.querySelector('.time')
-  const flag_elem = document.querySelector('.flag')
+  const timeElem = document.querySelector('.time')
+  const flagElem = document.querySelector('.flag')
+  const iconElem = document.querySelector('.material-symbols-rounded')
 
   let dict = init(size, mineNum)
   let childIdList = generateChildId(size)
@@ -339,7 +358,7 @@ const GameBoard = ({ size, mineNum }) => {
     if (mins < 10) mins = '0' + mins
     if (secs < 10) secs = '0' + secs
 
-    time_elem.innerHTML = mins + ':' + secs
+    timeElem.innerHTML = mins + ':' + secs
   }
 
   const startTimer = () => {
@@ -351,16 +370,16 @@ const GameBoard = ({ size, mineNum }) => {
     interval = null
   }
 
-  const resetTimer = () => {
-    stopTimer()
-    seconds = 0
-    time_elem.innerHTML = '00:00'
+  const setFlagText = (num) => {
+    if (num < 100) num = '0' + num
+    if (num < 10) num = '0' + num
+    flagElem.innerHTML = num
   }
 
-  const setFlagText = (num) => {
-    if (num < 100) num = '0'+ num
-    if (num < 10) num = '0'+ num
-    flag_elem.innerHTML = num
+  setFlagText(mineNum)
+
+  const setIconText = (text) => {
+    iconElem.innerHTML = text
   }
 
   return (
@@ -369,31 +388,47 @@ const GameBoard = ({ size, mineNum }) => {
       <OrbitControls enablePan={false} minDistance={size} maxDistance={1.5 * size} />
       <pointLight intensity={0.8} position={[-2 * size, -2 * size, -2 * size]} color={'purple'} />
       <pointLight intensity={0.5} position={[2 * size, 2 * size, 2 * size]} color={'red'} />
-      <Box size={size} mineNum={mineNum} tempDict={dict} childIds={childIdList} startTimer={startTimer} stopTimer={stopTimer} setFlagText={setFlagText} />
+      <Box size={size} mineNum={mineNum} tempDict={dict} childIds={childIdList} startTimer={startTimer} stopTimer={stopTimer} setFlagText={setFlagText} setIconText={setIconText}/>
     </mesh>
   )
 }
 
 //--------------------------------------------------------------------------------------------
 
-const x = 5
-const y = 25
-
 const App = () => {
+  const [difficulty, setDifficulty] = useState(0)
+  const difficultys = [[5, 25], [7, 60], [9, 111]]
+
+  useEffect(() => {
+    const data = window.localStorage.getItem('GAME_DIFFUCULTY')
+    if (data != null) setDifficulty(JSON.parse(data))
+  }, [])
+
+  useEffect(() => {
+    window.localStorage.setItem('GAME_DIFFUCULTY', JSON.stringify(difficulty))
+  }, [difficulty])
+
+  function refreshPage() {
+    window.location.reload(false);
+  }
+
+  const icons = ['sentiment_satisfied', 'sentiment_very_dissatisfied', 'sentiment_very_satisfied']
 
   return (
     <>
       <div className='top'>
         <div className='difficultyBar'>
-          <button className='difficultyButton' >Beginner</button>
-          <button className='difficultyButton'>Intermediate</button>
-          <button className='difficultyButton'>Expert</button>
+          <button className='difficultyButton' onClick={() => {refreshPage(), setDifficulty(0)}} style={(difficulty == 0) ? {color: 'white', textDecoration: 'underline'} : {}}>Beginner</button>
+          <button className='difficultyButton' onClick={() => {refreshPage(), setDifficulty(1)}} style={(difficulty == 1) ? {color: 'white', textDecoration: 'underline'} : {}}>Intermediate</button>
+          <button className='difficultyButton' onClick={() => {refreshPage(), setDifficulty(2)}} style={(difficulty == 2) ? {color: 'white', textDecoration: 'underline'} : {}}>Expert</button>
         </div>
         <div className='gameBar'>
           <div className='gameBarComponent flagNumber'>
             <div className='flag'>000</div>
           </div>
-          <button className='gameBarComponent resetButton'></button>
+          <button className='gameBarComponent resetButton' onClick={() => refreshPage()}>
+            <span className='material-symbols-rounded'>sentiment_satisfied</span>
+          </button>
           <div className='gameBarComponent timer'>
             <div className='time'>00:00</div>
           </div>
@@ -402,7 +437,7 @@ const App = () => {
       <div className='bottom'>
         <div className='appbox'>
           <Canvas>
-            <GameBoard size={x} mineNum={y}/>
+            <GameBoard size={difficultys[difficulty][0]} mineNum={difficultys[difficulty][1]} />
           </Canvas>
         </div>
       </div>
