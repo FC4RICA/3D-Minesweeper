@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@react-spring/web": "^9.7.2",
-    "@react-three/drei": "^9.68.3",
+    "@react-three/drei": "^9.114.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
